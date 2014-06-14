@@ -13,6 +13,10 @@
 		CCB99260194A8B5B006FEAFA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CCB9925E194A8B5B006FEAFA /* Main.storyboard */; };
 		CCB99262194A8B5B006FEAFA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CCB99261194A8B5B006FEAFA /* Images.xcassets */; };
 		CCB9926E194A8B5B006FEAFA /* HeySwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB9926D194A8B5B006FEAFA /* HeySwiftTests.swift */; };
+		CCB9927A194BD9D8006FEAFA /* CVDatastore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB99279194BD9D8006FEAFA /* CVDatastore.swift */; };
+		CCB9927E194BE119006FEAFA /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB9927D194BE119006FEAFA /* MyCollectionViewCell.swift */; };
+		CCB99280194BF718006FEAFA /* ResultsEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB9927F194BF718006FEAFA /* ResultsEntry.swift */; };
+		CCB99282194C291C006FEAFA /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB99281194C291C006FEAFA /* PhotoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +40,10 @@
 		CCB99267194A8B5B006FEAFA /* HeySwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HeySwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCB9926C194A8B5B006FEAFA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CCB9926D194A8B5B006FEAFA /* HeySwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeySwiftTests.swift; sourceTree = "<group>"; };
+		CCB99279194BD9D8006FEAFA /* CVDatastore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CVDatastore.swift; sourceTree = "<group>"; };
+		CCB9927D194BE119006FEAFA /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
+		CCB9927F194BF718006FEAFA /* ResultsEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultsEntry.swift; sourceTree = "<group>"; };
+		CCB99281194C291C006FEAFA /* PhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,9 +87,13 @@
 			children = (
 				CCB99257194A8B5B006FEAFA /* AppDelegate.swift */,
 				CCB9925C194A8B5B006FEAFA /* ViewController.swift */,
+				CCB99281194C291C006FEAFA /* PhotoViewController.swift */,
+				CCB9927D194BE119006FEAFA /* MyCollectionViewCell.swift */,
+				CCB99279194BD9D8006FEAFA /* CVDatastore.swift */,
+				CCB9927F194BF718006FEAFA /* ResultsEntry.swift */,
+				CCB99283194C9180006FEAFA /* Model */,
 				CCB9925E194A8B5B006FEAFA /* Main.storyboard */,
 				CCB99261194A8B5B006FEAFA /* Images.xcassets */,
-				CCB99259194A8B5B006FEAFA /* HeySwift.xcdatamodeld */,
 				CCB99255194A8B5B006FEAFA /* Supporting Files */,
 			);
 			path = HeySwift;
@@ -110,6 +122,14 @@
 				CCB9926C194A8B5B006FEAFA /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		CCB99283194C9180006FEAFA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				CCB99259194A8B5B006FEAFA /* HeySwift.xcdatamodeld */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -211,7 +231,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCB9927A194BD9D8006FEAFA /* CVDatastore.swift in Sources */,
+				CCB99280194BF718006FEAFA /* ResultsEntry.swift in Sources */,
+				CCB9927E194BE119006FEAFA /* MyCollectionViewCell.swift in Sources */,
 				CCB9925D194A8B5B006FEAFA /* ViewController.swift in Sources */,
+				CCB99282194C291C006FEAFA /* PhotoViewController.swift in Sources */,
 				CCB9925B194A8B5B006FEAFA /* HeySwift.xcdatamodeld in Sources */,
 				CCB99258194A8B5B006FEAFA /* AppDelegate.swift in Sources */,
 			);
