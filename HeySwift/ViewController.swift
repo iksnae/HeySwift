@@ -43,7 +43,6 @@ class ViewController: UIViewController, CVDatastoreDelegate, UICollectionViewDel
         self.collectionView.dataSource = self.datasource
         self.collectionView.delegate = self
         self.datasource.delegate = self
-//        self.datasource.refresh()
         
         self.collectionView.contentOffset = CGPoint(x: 0, y: 44);
         
@@ -54,7 +53,7 @@ class ViewController: UIViewController, CVDatastoreDelegate, UICollectionViewDel
         self.searchBar.delegate = self
         self.navigationController.navigationBar.addSubview(self.searchBar)
         
-        self.datasource.searchForImages("swift ios", start: 0);
+        self.datasource.searchForImages("frida", start: 0);
     }
     
     
@@ -73,7 +72,9 @@ class ViewController: UIViewController, CVDatastoreDelegate, UICollectionViewDel
         case .Ready:
             
             dispatch_async(dispatch_get_main_queue(), {
-                self.title = "Total Images: \(self.datasource.collectionView(self.collectionView, numberOfItemsInSection: 0))"
+                let count = self.datasource.collectionView(self.collectionView, numberOfItemsInSection: 0)
+                
+                self.title = "\(count) images for '" + self.datasource.searchQuery + "'"
                 self.collectionView.reloadData()
                 self.activityView.stopAnimating()
             })

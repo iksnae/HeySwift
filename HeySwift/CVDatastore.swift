@@ -27,6 +27,9 @@ protocol CVDatastoreDelegate{
 
 class CVDatastore: NSObject, UICollectionViewDataSource {
     
+    
+    
+    let baseQueryString:String = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&q="
     let queue = NSOperationQueue()
     let url = NSURL(string: "")
     
@@ -34,32 +37,50 @@ class CVDatastore: NSObject, UICollectionViewDataSource {
     var delegate:CVDatastoreDelegate?
     var items:NSMutableArray = NSMutableArray()
     
-    var lastSearchString:String = ""
+    var searchQuery:String = ""{
+        didSet{
+            println( "set last search query: " + searchQuery )
+        }
+    }
     
+    var searchStartIndex:Int = 0{
+        didSet{
+            println( "set last search index: " + String( searchStartIndex ) )
+        }
+    }
+
     var currentState:DataSourceState = .Idle{
         didSet{
-            println( "datasource state changed:\t"+currentState.toRaw() )
+            println( "datasource state changed:\t" + currentState.toRaw() )
             self.delegate?.dataSourceDidChangeState(currentState)
         }
     }
     
     
+    func searchURL() -> NSURL
+    {
+        let urlEncodedQuery:String = searchQuery.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
+        let urlString:String = baseQueryString + urlEncodedQuery + "&start=" + String( searchStartIndex )
+        return NSURL(string: urlString )
+    }
+    
+    
     func searchForImages(query:String,start:Int)
     {
-        lastSearchString = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&q=\(query.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding))&start="
-        var urlString:String = lastSearchString + String(start)
+        // cache the query and start values
+        searchQuery = query
+        searchStartIndex = start
         
         
-        
-        let searchUrl = NSURL(string: urlString);
+        let searchUrl = searchURL();
         
         self.items.removeAllObjects()
         
         self.currentState = .Loading
         
-        let request:NSURLRequest = NSURLRequest(URL: self.imageSearchURLWithStart(start) )
-        NSURLRequest(URL: searchUrl, cachePolicy: NSURLRequestCachePolicy.ReturnCacheDataElseLoad, timeoutInterval: 5)
+        let request:NSURLRequest = NSURLRequest(URL: searchUrl )
         
+        NSURLRequest(URL: searchUrl, cachePolicy: NSURLRequestCachePolicy.ReturnCacheDataElseLoad, timeoutInterval: 5)
         NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
             
             self.currentState = .Loaded
@@ -97,22 +118,20 @@ class CVDatastore: NSObject, UICollectionViewDataSource {
         
     }
     
-    func imageSearchURLWithStart(start:Int) ->NSURL
-    {
-        return NSURL(string: lastSearchString + String(start))
-    }
+
     
     func refresh()
     {
+        searchStartIndex = 0
         self.items.removeAllObjects()
-        self.loadImagesFromIndex(0)
+        self.loadMoreImages()
     }
     
-    func loadImagesFromIndex(fromWhere:Int)
+    func loadMoreImages()
     {
         self.currentState = .Loading
-        
-        let request:NSURLRequest = NSURLRequest(URL: self.imageSearchURLWithStart(fromWhere) )
+        searchStartIndex = self.items.count;
+        let request:NSURLRequest = NSURLRequest(URL: self.searchURL() )
         NSURLRequest(URL: self.url, cachePolicy: NSURLRequestCachePolicy.ReturnCacheDataElseLoad, timeoutInterval: 5)
         
         NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
@@ -168,7 +187,7 @@ class CVDatastore: NSObject, UICollectionViewDataSource {
         
         if indexPath.item == self.items.count-1 && self.items.count < 64
         {
-            self.loadImagesFromIndex(self.items.count)
+            self.loadMoreImages()
         }
         
         return cell
