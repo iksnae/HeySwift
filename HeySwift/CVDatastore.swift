@@ -27,15 +27,13 @@ protocol CVDatastoreDelegate{
 
 class CVDatastore: NSObject, UICollectionViewDataSource {
     
-    
-    
     let baseQueryString:String = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&q="
     let queue = NSOperationQueue()
     let url = NSURL(string: "")
-    
+    let items:NSMutableArray = NSMutableArray()
     
     var delegate:CVDatastoreDelegate?
-    var items:NSMutableArray = NSMutableArray()
+    
     
     var searchQuery:String = ""{
         didSet{
@@ -74,7 +72,9 @@ class CVDatastore: NSObject, UICollectionViewDataSource {
         
         let searchUrl = searchURL();
         
+        // reset array
         self.items.removeAllObjects()
+        
         
         self.currentState = .Loading
         
@@ -123,14 +123,20 @@ class CVDatastore: NSObject, UICollectionViewDataSource {
     func refresh()
     {
         searchStartIndex = 0
-        self.items.removeAllObjects()
-        self.loadMoreImages()
+        items.removeAllObjects()
+        loadImages()
     }
     
     func loadMoreImages()
     {
-        self.currentState = .Loading
         searchStartIndex = self.items.count;
+        loadImages()
+    }
+    
+    func loadImages()
+    {
+        self.currentState = .Loading
+        
         let request:NSURLRequest = NSURLRequest(URL: self.searchURL() )
         NSURLRequest(URL: self.url, cachePolicy: NSURLRequestCachePolicy.ReturnCacheDataElseLoad, timeoutInterval: 5)
         
@@ -172,6 +178,7 @@ class CVDatastore: NSObject, UICollectionViewDataSource {
     
     
     // Collection View Delegate Methods
+    
     func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int
     {
         return self.items.count
@@ -187,11 +194,13 @@ class CVDatastore: NSObject, UICollectionViewDataSource {
         
         if indexPath.item == self.items.count-1 && self.items.count < 64
         {
-            self.loadMoreImages()
+            loadMoreImages()
         }
         
         return cell
     }
+    
+    
     func numberOfSectionsInCollectionView(collectionView: UICollectionView!) -> Int
     {
         return 1
