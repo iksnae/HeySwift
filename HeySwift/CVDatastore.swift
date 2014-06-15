@@ -68,6 +68,7 @@ class CVDatastore: NSObject, UICollectionViewDataSource {
         // cache the query and start values
         searchQuery = query
         searchStartIndex = start
+        items.removeAllObjects()
         
         // load images
         self.loadImages()
