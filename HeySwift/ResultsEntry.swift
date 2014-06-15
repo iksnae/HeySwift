@@ -14,8 +14,8 @@ class ResultsEntry: NSObject {
     func parseDict(json:Dictionary<String,AnyObject>)
     {
         if let title:AnyObject = json["contentNoFormatting"]{ self.title = title as NSString }
-        if let url:AnyObject = json["url"]{ self.url = url as NSString }
-        if let tbUrl:AnyObject = json["tbUrl"]{ self.thumbUrl = tbUrl as NSString }
+        if let url:AnyObject = json["url"]{ self.url = url.stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding) as NSString }
+        if let tbUrl:AnyObject = json["tbUrl"]{ self.thumbUrl = tbUrl.stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding) as NSString }
         
         self.loadThumb()
 
@@ -35,6 +35,7 @@ class ResultsEntry: NSObject {
     var height:Float?
     
     @lazy var fullImage:UIImage = {
+        println("loading image from: ", self.url.description )
         let imageData:NSData = NSData.dataWithContentsOfURL(NSURL(string: self.url), options: NSDataReadingOptions.DataReadingMappedIfSafe, error: nil)
         return UIImage(data: imageData)
     }()
