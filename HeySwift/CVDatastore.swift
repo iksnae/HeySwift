@@ -28,8 +28,8 @@ protocol CVDatastoreDelegate{
 class CVDatastore: NSObject, UICollectionViewDataSource {
     
     let baseQueryString:String = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&q="
-    let queue = NSOperationQueue()
-    let url = NSURL(string: "")
+    let queue:NSOperationQueue = NSOperationQueue()
+    let url:NSURL = NSURL(string: "")
     let items:NSMutableArray = NSMutableArray()
     
     var delegate:CVDatastoreDelegate?
@@ -63,63 +63,18 @@ class CVDatastore: NSObject, UICollectionViewDataSource {
     }
     
     
-    func searchForImages(query:String,start:Int)
+    func searchForImages( query:String, start:Int )
     {
         // cache the query and start values
         searchQuery = query
         searchStartIndex = start
         
-        
-        let searchUrl = searchURL();
-        
-        // reset array
-        self.items.removeAllObjects()
-        
-        
-        self.currentState = .Loading
-        
-        let request:NSURLRequest = NSURLRequest(URL: searchUrl )
-        
-        NSURLRequest(URL: searchUrl, cachePolicy: NSURLRequestCachePolicy.ReturnCacheDataElseLoad, timeoutInterval: 5)
-        NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
-            
-            self.currentState = .Loaded
-            
-            var readError : NSError?
-            var dict:Dictionary<String,AnyObject> = NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers, error: &readError) as Dictionary<String, AnyObject>
-            
-            if readError
-            {
-                if let error = readError
-                {
-                    println("failed to parse json: \( error.localizedDescription )" )
-                }
-                
-                self.currentState = .Failed
-                self.currentState = .Idle
-            }
-            else
-            {
-                var results:Array<Dictionary< String, AnyObject >> = dict["responseData"]?["results"] as Array<Dictionary< String, AnyObject >>
-                
-                for itm:Dictionary<String,AnyObject> in results
-                {
-                    var entry:ResultsEntry = ResultsEntry()
-                    entry.parseDict(itm)
-                    self.items.addObject(entry)
-                }
-                
-                self.currentState = .Ready
-                self.currentState = .Idle
-            }
-            
-            
-            })
-        
+        // load images
+        self.loadImages()
     }
     
+  
 
-    
     func refresh()
     {
         searchStartIndex = 0
@@ -137,45 +92,64 @@ class CVDatastore: NSObject, UICollectionViewDataSource {
     {
         self.currentState = .Loading
         
+        
         let request:NSURLRequest = NSURLRequest(URL: self.searchURL() )
         NSURLRequest(URL: self.url, cachePolicy: NSURLRequestCachePolicy.ReturnCacheDataElseLoad, timeoutInterval: 5)
         
         NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
             
+            // set the state: loaded
             self.currentState = .Loaded
             
-            var readError : NSError?
-            var dict:Dictionary<String,AnyObject> = NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers, error: &readError) as Dictionary<String, AnyObject>
-            
-            if readError
+            // check that there was no error with request
+            if (error)
             {
-                if let error = readError
-                {
-                    println("failed to parse json: \( error.localizedDescription )" )
-                }
-                
+                println("Request Failed: ", error.localizedDescription )
                 self.currentState = .Failed
                 self.currentState = .Idle
             }
             else
             {
-                var results:Array<Dictionary< String, AnyObject >> = dict["responseData"]?["results"] as Array<Dictionary< String, AnyObject >>
-                
-                for itm:Dictionary<String,AnyObject> in results
-                {
-                    var entry:ResultsEntry = ResultsEntry()
-                    entry.parseDict(itm)
-                    self.items.addObject(entry)
-                }
-                
-                self.currentState = .Ready
-                self.currentState = .Idle
+                println("Request Successful")
+                self.parseResults( data )
             }
             
-            
-            })
+        })
     }
     
+    
+    func parseResults( data:NSData )
+    {
+        var readError : NSError?
+        var dict:Dictionary<String,AnyObject> = NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers, error: &readError) as Dictionary<String, AnyObject>
+        
+        if readError
+        {
+            if let error = readError
+            {
+                println("failed to parse json: \( error.localizedDescription )" )
+            }
+            
+            self.currentState = .Failed
+            self.currentState = .Idle
+        }
+        else
+        {
+            var results:Array<Dictionary< String, AnyObject >> = dict["responseData"]?["results"] as Array<Dictionary< String, AnyObject >>
+            
+            for itm:Dictionary<String,AnyObject> in results
+            {
+                var entry:ResultsEntry = ResultsEntry()
+                entry.parseDict(itm)
+                self.items.addObject(entry)
+            }
+            
+            self.currentState = .Ready
+            self.currentState = .Idle
+            
+        }
+        
+    }
     
     // Collection View Delegate Methods
     
