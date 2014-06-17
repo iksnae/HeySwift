@@ -15,8 +15,6 @@ class ResultsEntry: NSObject {
     var title:String?
     var url:String?
     var thumbUrl:String?
-    var width:Float?
-    var height:Float?
     
     
     
@@ -31,9 +29,18 @@ class ResultsEntry: NSObject {
         }
         
         // set values with parse function
+        
+        
+        // title
         self.title = parseString("contentNoFormatting", json )
+        
+        // full res image url
         self.url = parseString("url", json )
+            .stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
+        
+        // thumb image url
         self.thumbUrl = parseString("tbUrl", json )
+            .stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
         
         // load the thumb
         self.loadThumb()
@@ -53,8 +60,14 @@ class ResultsEntry: NSObject {
     // load full image lazily
     @lazy var fullImage:UIImage = {
         println("loading image from: ", self.url.description )
-        let imageData:NSData = NSData.dataWithContentsOfURL(NSURL(string: self.url), options: NSDataReadingOptions.DataReadingMappedIfSafe, error: nil)
-        return UIImage(data: imageData)
+        
+        var error:NSError?
+        let imageData:NSData = NSData.dataWithContentsOfURL(NSURL(string: self.url), options: NSDataReadingOptions.DataReadingMappedIfSafe, error: &error)
+        if error { return UIImage() } else
+        {
+            return UIImage(data: imageData)
+        }
+        
     }()
     
     
