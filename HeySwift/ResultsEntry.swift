@@ -18,17 +18,29 @@ class ResultsEntry: NSObject {
     var width:Float?
     var height:Float?
     
+    
+    
     // parse json dictionary
     func parseDict(json:Dictionary<String,AnyObject>)
     {
-        if let title:AnyObject = json["contentNoFormatting"]{ self.title = title as NSString }
-        if let url:AnyObject = json["url"]{ self.url = url.stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding) as NSString }
-        if let tbUrl:AnyObject = json["tbUrl"]{ self.thumbUrl = tbUrl.stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding) as NSString }
         
+        // reduced repeat code
+        func parseString( key:String, dict:NSDictionary ) ->String
+        {
+            return dict[key] as String
+        }
+        
+        // set values with parse function
+        self.title = parseString("contentNoFormatting", json )
+        self.url = parseString("url", json )
+        self.thumbUrl = parseString("tbUrl", json )
+        
+        // load the thumb
         self.loadThumb()
-
         
     }
+    
+    
     
     // load thumb image
     func loadThumb()
