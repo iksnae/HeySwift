@@ -427,6 +427,7 @@
 				CCB99273194A8B5B006FEAFA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CCB99274194A8B5B006FEAFA /* Build configuration list for PBXNativeTarget "HeySwiftTests" */ = {
 			isa = XCConfigurationList;
@@ -435,6 +436,7 @@
 				CCB99276194A8B5B006FEAFA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
