@@ -25,6 +25,7 @@ class MyCollectionViewCell: UICollectionViewCell {
     var labelText:String = "" {
         didSet{
             self.vibrantLabel.text = self.labelText
+            self.label.text = self.labelText
         }
     }
     
