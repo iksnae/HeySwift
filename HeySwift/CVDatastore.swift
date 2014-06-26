@@ -162,11 +162,15 @@ class CVDatastore: NSObject, UICollectionViewDataSource {
     func collectionView(collectionView: UICollectionView!, cellForItemAtIndexPath indexPath: NSIndexPath!) -> UICollectionViewCell!
     {
         let cell:MyCollectionViewCell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as MyCollectionViewCell
+   
+        // bounds check
+        if (indexPath.row < self.items.count)
+        {
+            let item:ResultsEntry = self.items.objectAtIndex(indexPath.row) as ResultsEntry
+            cell.entry = item
+        }
         
-        let item:ResultsEntry = self.items.objectAtIndex(indexPath.row) as ResultsEntry
-        cell.entry = item
-        
-        
+        // load more images if we're at end of the list and have less that 64
         if indexPath.item == self.items.count-1 && self.items.count < 64
         {
             loadMoreImages()
