@@ -12,7 +12,10 @@ import AVFoundation
 
 let screenSize:CGRect = UIScreen.mainScreen().bounds
 
-class ViewController: UIViewController, CVDatastoreDelegate, UICollectionViewDelegate, UISearchBarDelegate {
+class ViewController: UIViewController, CVDatastoreDelegate, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
+    
+    
+    
     
     // IB Outlets
     
@@ -23,8 +26,7 @@ class ViewController: UIViewController, CVDatastoreDelegate, UICollectionViewDel
     let datasource:CVDatastore = CVDatastore()
     let activityView:UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
     let blurEffectStyle = UIBlurEffectStyle.Dark
-    
-    
+    let flowLayout:UICollectionViewFlowLayout = UICollectionViewFlowLayout()
     
     
     // Properties ( Reactive )
@@ -124,7 +126,6 @@ class ViewController: UIViewController, CVDatastoreDelegate, UICollectionViewDel
         self.collectionView.delegate = self
         self.datasource.delegate = self
         self.collectionView.contentOffset = CGPoint(x: 0, y: 44);
-        
         self.datasource.searchForImages("frida", start: 0);
     }
     
@@ -162,6 +163,18 @@ class ViewController: UIViewController, CVDatastoreDelegate, UICollectionViewDel
         self.selectedIndexPath = indexPath
     }
     
+    // UICollectionViewDelegateFlowLayout
+    
+    func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize
+    {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad{
+            return CGSize(width: 256, height: 256)
+        }else{
+            return CGSize(width: 160, height: 160)
+        }
+    }
+
+    
     
     
     // UISearchBar Delegate Methods
@@ -188,8 +201,5 @@ class ViewController: UIViewController, CVDatastoreDelegate, UICollectionViewDel
         self.datasource.searchForImages(searchBar.text, start: 0)
         self.isSearching = false;
     }
-    
-    
-    
     
 }
